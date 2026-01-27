@@ -6,6 +6,7 @@ interface ClientProdutsprops{
   nome:string,
   preçoFinal:number
   observação:string,
+  tipos?: string;
 }
 
 // Formatando a mensagem
@@ -21,7 +22,7 @@ ENDEREÇO DE ENTREGA:
 • Número: ${pedido.clientedata.endereco.numero}
 • Complemento: ${pedido.clientedata.endereco.complemento}
 
-PEDIDO: ${pedido.nome}
+PEDIDO: ${pedido.nome} (${pedido.tipos || 'Padrão'})
 VALOR TOTAL: R$ ${pedido.preçoFinal},00
 FORMA DE PAGAMENTO: ${pedido.clientedata.formaPagamento.toUpperCase()}
 ENTREGA: ${pedido.clientedata.entrega ? 'SIM' : 'NÃO'}

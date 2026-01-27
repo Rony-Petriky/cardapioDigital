@@ -5,6 +5,11 @@ export interface Additional {
   image?: string;
   icon?: string;
 }
+export interface Tipos {
+  id: number;
+  name: string;
+  price: number;
+}
 
 export interface Product {
   id: number;
@@ -17,4 +22,5 @@ export interface Product {
   additionals?: Additional[];
   destaque: boolean;
   maisVendidos: boolean;
+  tipos?: Tipos[];
 }

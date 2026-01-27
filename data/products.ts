@@ -188,11 +188,15 @@ tags:["queijo", "bolo", "polvilho"],
   description:
     "Sabor caseiro e irresistível em cada colher! Feito com alho selecionado e ervas aromáticas, esse tempero realça o gosto do arroz soltinho e do feijão encorpado, trazendo aquele toque tradicional da cozinha brasileira. Prático, versátil e indispensável no dia a dia.",
   category:"Temperos",
-  price: 25.00,
+  price: 10.00,
   image: "/images/temperos/tempero_de_alho.png",
   tags:["pimenta", "tempero", "tempero de alho"],
   destaque: false,
   maisVendidos: true,
+  tipos: [
+  { id: 1, name: "Pote 250", price: 10 },
+  { id: 2, name: "Pote de 500", price: 18 },
+  ]
 },
 
 ];

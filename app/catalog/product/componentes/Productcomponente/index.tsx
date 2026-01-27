@@ -11,17 +11,21 @@ import { redirect  } from "next/navigation";
 interface ProductProps{
   product: Product;
   valorEntrega:number;
+  
 }
 interface ClientProdutsprops{
   clientedata:OrderData,
   nome:string,
-  preçoFinal:number
+  preçoFinal:number,
   observação:string,
+  tipos?: string;
 }
 export function Productcomponente({product,valorEntrega }:ProductProps) {
   const [qty, setQty] = useState<Record<number, number>>({});
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
+  const [tipoSelecionado, setTipoSelecionado] = useState<number | null>(null);
+
   const [clientedata, setClientedata] = useState<ClientProdutsprops>({
     clientedata: {nome: "",
     telefone: "",
@@ -35,7 +39,8 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
     formaPagamento: "pix"},
     nome:"",
     preçoFinal:0,
-    observação:""
+    observação:"",
+    tipos: undefined,
 });
   const add = (id: number) => {
     setQty((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
@@ -53,15 +58,17 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
   const filtered = product.additionals?.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
+  const tipos = product.tipos || [];
   
     const extrasTotal = product.additionals?.reduce((sum, item) => {
         const count = qty[item.id] || 0;
         return sum + count * item.price;
     }, 0) || 0;
 
-  
-    const finalTotal = product.price + extrasTotal;
-
+    const tipoprice = tipos.find(t => t.id === tipoSelecionado)?.price || 0;
+    const finalTotalaux = tipoprice > 0 ?  tipoprice : product.price;
+    const finalTotal = finalTotalaux + extrasTotal;
+    
   /* ---------------------------------------------------------
      LISTA DE ADICIONAIS (AGORA DENTRO DO COMPONENTE)
   ---------------------------------------------------------- */
@@ -73,7 +80,8 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
     clientedata: data,
     nome: product.name,
     preçoFinal: data.entrega ? finalTotal + valorEntrega: finalTotal,
-    observação: note
+    observação: note,
+    tipos: tipos.find(t => t.id === tipoSelecionado)?.name || undefined
   };
 
   setClientedata(updated);
@@ -108,6 +116,46 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
             </span>
           </div>
 
+              {/* tipos de produtos */}
+              <div className="px-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Tipos</h4>
+              <div className="flex px=4">
+              <div className="grid grid-cols-2 gap-4">
+            {tipos && tipos.map((item) => (
+
+                  <label key={item.id}
+                    className={`relative flex cursor-pointer rounded-xl border-2 p-4 focus:outline-none ${
+                      tipoSelecionado === item.id
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="formaPagamento"
+                      value={item.name}
+                      checked={tipoSelecionado === item.id}
+                      onChange={() => setTipoSelecionado(item.id)}
+                      className="sr-only"
+                    />
+
+                    <div className="flex w-full items-center justify-between">
+                      <div className="text-sm">
+                        <div className="font-medium text-gray-900">{item.name}</div>
+                        <div className="text-gray-500">{item.name}</div>
+                      </div>
+
+                      <div className="h-5 w-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                        {tipoSelecionado === item.id && (
+                          <div className="h-2 w-2 rounded-full bg-green-600" />
+                        )}
+                      </div>
+                    </div>
+                  </label>
+            ))}
+                </div>
+                </div>
+                </div>
 
 
           {/* LISTA DE ADICIONAIS */}
