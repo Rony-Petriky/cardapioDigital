@@ -139,11 +139,15 @@ tags:["queijo", "bolo", "polvilho"],
   description:
     "Para quem gosta de intensidade! Pimentão, cebola, ervas finas e tempero baiano criam uma mistura levemente picante e muito saborosa. Ideal para dar personalidade a carnes, frangos e molhos.",
   category:"Temperos",
-  price: 25.00,
+  price: 10.00,
   image: "/images/temperos/tempero_apimentado.png",
   tags:["pimenta", "tempero"],
   destaque: false,
   maisVendidos: true,
+  tipos: [
+  { id: 1, name: "Pote 250", price: 10 },
+  { id: 2, name: "Pote 500", price: 18 },
+  ]
 },
 {
   id: 13,
@@ -151,11 +155,15 @@ tags:["queijo", "bolo", "polvilho"],
   description:
     "Fresco e aromático, esse tempero combina alho, cebola, cheiro-verde, orégano e chimichurri, com o toque especial da pimenta de cheiro. Sabor marcante sem exagerar na ardência. Excelente para peixes, aves e pratos caseiros.",
   category:"Temperos",
-  price: 25.00,
+  price: 10.00,
   image: "/images/temperos/tempero_com_pimenta_de_cheiro.png",
   tags:["pimenta", "tempero, pimenta de cheiro"],
   destaque: false,
   maisVendidos: true,
+  tipos: [
+  { id: 1, name: "Pote 250", price: 10 },
+  { id: 2, name: "Pote 500", price: 18 },
+  ]
 },
 {
   id: 14,
@@ -163,11 +171,15 @@ tags:["queijo", "bolo", "polvilho"],
   description:
     "Um mix completo para o dia a dia na cozinha. A união de chimichurri, orégano, cebola, alho e coloral entrega sabor marcante, cor vibrante e aroma irresistível. Perfeito para temperar carnes, arroz, feijão e refogados.",
   category:"Temperos",
-  price: 25.00,
+  price: 10.00,
   image: "/images/temperos/tempero_completo.png",
   tags:["pimenta", "tempero", "tempero completo"],
   destaque: false,
   maisVendidos: true,
+  tipos: [
+  { id: 1, name: "Pote 250", price: 10 },
+  { id: 2, name: "Pote 500", price: 18 },
+  ]
 },
 
 {
@@ -176,11 +188,15 @@ tags:["queijo", "bolo", "polvilho"],
   description:
     "Uma combinação aromática e defumada que realça o sabor natural dos alimentos. A páprica defumada traz um toque especial, enquanto o chimichurri, orégano e tempero baiano garantem um equilíbrio perfeito entre ervas e especiarias. Ideal para carnes, legumes e grelhados.",
   category:"Temperos",
-  price: 25.00,
+  price: 10.00,
   image: "/images/temperos/tempero_seco.png",
   tags:["pimenta", "tempero", "tempero seco"],
   destaque: false,
   maisVendidos: true,
+  tipos: [
+  { id: 1, name: "Pote 250", price: 10 },
+  { id: 2, name: "Pote 500", price: 18 },
+  ]
 },
 {
   id: 16,
@@ -195,7 +211,7 @@ tags:["queijo", "bolo", "polvilho"],
   maisVendidos: true,
   tipos: [
   { id: 1, name: "Pote 250", price: 10 },
-  { id: 2, name: "Pote de 500", price: 18 },
+  { id: 2, name: "Pote 500", price: 18 },
   ]
 },
 

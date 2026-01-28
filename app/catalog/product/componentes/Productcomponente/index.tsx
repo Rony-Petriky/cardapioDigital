@@ -142,7 +142,7 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
                     <div className="flex w-full items-center justify-between">
                       <div className="text-sm">
                         <div className="font-medium text-gray-900">{item.name}</div>
-                        <div className="text-gray-500">{item.name}</div>
+                        <div className="text-gray-500">R$ {item.price.toFixed(2)}</div>
                       </div>
 
                       <div className="h-5 w-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
@@ -180,7 +180,7 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
               Observação
             </label>
             <textarea
-              placeholder="Observações (ex: tirar cebola, ponto da carne...)"
+              placeholder="Observações"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               className="w-full bg-gray-100 rounded-2xl p-3 text-sm resize-none border-0 outline-none focus:border-2 focus:border-green-500 focus:ring-0"
