@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Rolagem } from "./divrolagens";
+import { useCart } from "@/components/cart/CartContext";
 
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 export default function FeaturedProducts({ products }: Props) {
   const [current, setCurrent] = useState(0);
+  const { addItem } = useCart();
 
 
   const nextSlide = () => {
@@ -41,6 +43,7 @@ export default function FeaturedProducts({ products }: Props) {
       
       {products.map((product) => (
         <div
+          onClick={() => goToProduct(product.id)}
           key={product.id}
           className="flex-1 bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 max-h-xs max-w-xs md:max-w-xl"
         >
@@ -62,12 +65,17 @@ export default function FeaturedProducts({ products }: Props) {
           <div className="p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
             <p className="text-gray-600 mb-4 line-clamp-2 text-sm">{product.description}</p>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <span className="text-2xl font-bold text-green-600">R$ {product.price.toFixed(2)}</span>
-              <button onClick={() => goToProduct(product.id)}
-              className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full font-semibold text-sm transition-colors duration-300 shadow-md hover:shadow-lg cursor-pointer">
-                Comprar
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => addItem(product)}
+                  className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full font-semibold text-sm transition-colors duration-300 shadow-md hover:shadow-lg cursor-pointer"
+                >
+                  Adicionar
+                </button>
+
+              </div>
             </div>
           </div>
         </div>

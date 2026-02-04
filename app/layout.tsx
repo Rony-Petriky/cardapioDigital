@@ -1,7 +1,6 @@
 import "./globals.css";
 import { ReactNode } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ClientProviders from "@/components/ClientProviders";
 import RouteLoadingOverlay from "@/components/RouteLoadingOverlay";
 export const metadata = {
   title: "Catálogo Digital",
@@ -12,8 +11,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
       <body className="bg-white text-gray-900 antialiased">
-        <RouteLoadingOverlay/>
-        {children}
+        <RouteLoadingOverlay />
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

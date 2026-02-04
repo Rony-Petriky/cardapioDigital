@@ -3,6 +3,7 @@
 import { Product } from "@/types/Product";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/components/cart/CartContext";
 
 
 interface Props {
@@ -15,6 +16,7 @@ interface ProductsByCategoryProps {
 
 export default function ProductsByCategory({ products,  botaoMiasCategoria}: ProductsByCategoryProps) {
     const router = useRouter();
+    const { addItem } = useCart();
 
   const goToProduct = (id: number) => {
     router.push(`/catalog/product/${id}`);
@@ -73,12 +75,22 @@ export default function ProductsByCategory({ products,  botaoMiasCategoria}: Pro
                 <div className="p-4">
                   <h4 className="font-bold text-gray-900 mb-1">{product.name}</h4>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-lg font-bold text-green-600">R$ {product.price.toFixed(2)}</span>
-                    <button onClick={()=> goToProduct(product.id)} 
-                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full font-semibold text-xs transition-colors duration-300">
-                      Comprar
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => addItem(product)}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full font-semibold text-xs transition-colors duration-300"
+                      >
+                        Adicionar
+                      </button>
+                      <button
+                        onClick={() => goToProduct(product.id)}
+                        className="bg-white border border-green-500 text-green-600 px-4 py-2 rounded-full font-semibold text-xs transition-colors duration-300 hover:bg-green-50"
+                      >
+                        Ver
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -4,27 +4,18 @@ import { useState } from "react";
 import Image from "next/image";
 import OrderModal, {OrderData} from "@/components/modelCliente"; 
 import { AdditionalList } from "./componentes/AdditionalList"; 
-import type { Additional, Product } from "@/types/Product";
+import type { Additional, Product, ProductProps, ClientProdutsprops} from "@/types/Product";
 import { api } from "@/lib/api";
 import { redirect  } from "next/navigation";
+import { useCart } from "@/components/cart/CartContext";
 
-interface ProductProps{
-  product: Product;
-  valorEntrega:number;
-   
-}
-interface ClientProdutsprops{
-  clientedata:OrderData,
-  nome:string,
-  preçoFinal:number,
-  observação:string,
-  tipos?: string;
-}
+
 export function Productcomponente({product,valorEntrega }:ProductProps) {
   const [qty, setQty] = useState<Record<number, number>>({});
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
   const [tipoSelecionado, setTipoSelecionado] = useState<number | null>(null);
+  const { addItem } = useCart();
 
   const [clientedata, setClientedata] = useState<ClientProdutsprops>({
     clientedata: {nome: "",
@@ -37,10 +28,12 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
     },
     entrega: false,
     formaPagamento: "pix"},
-    nome:"",
-    preçoFinal:0,
-    observação:"",
-    tipos: undefined,
+    product: [{product, infadicionais: {observação: note, 
+                                        tipos: ""},
+                                        valorEntrega: valorEntrega}],
+    infvenda: {preçoFinal: 0, 
+                entrega: false, 
+                formaPagamento: "pix"}
 });
   const add = (id: number) => {
     setQty((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
@@ -194,7 +187,7 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
               Total: R$ {finalTotal.toFixed(2)}
             </div>
 
-            <button onClick={() => setIsModalOpen(true)}
+            <button onClick={() => addItem(clientedata)}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl text-lg">
               Finalizar Pedido
             </button>
