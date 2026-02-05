@@ -214,5 +214,43 @@ tags:["queijo", "bolo", "polvilho"],
   { id: 2, name: "Pote 500", price: 18 },
   ]
 },
+ {
+  id: 17,
+  name: "Hambúrguer Artesanal",
+  description: "Hambúrguer artesanal com carne 180g, queijo cheddar, alface, tomate e molho especial da casa.",
+  price: 28.9,
+  category: "Lanches",
+  image: "/images/hamburguer/hamburguer-artesanal.jpg",
+  tags: ["hambúrguer", "artesanal", "lanche"],
+  destaque: true,
+  maisVendidos: true,
+  additionals: [
+    {
+      id: 1,
+      name: "Queijo extra",
+      price: 3.5,
+      icon: "🧀"
+    },
+    {
+      id: 2,
+      name: "Bacon",
+      price: 5.0,
+      icon: "🥓"
+    }
+  ],
+  tipos: [
+    {
+      id: 1,
+      name: "Pão Brioche",
+      price: 0
+    },
+    {
+      id: 2,
+      name: "Pão Australiano",
+      price: 2.5
+    }
+  ]
+}
+
 
 ];

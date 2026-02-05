@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCart } from "./CartContext";
@@ -10,22 +10,30 @@ import OrderModal, {OrderData} from "@/components/modelCliente";
 export default function CartUI() {
   const pathname = usePathname();
   const shouldShow = pathname?.startsWith("/catalog");
-  const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { 
     items, 
+    model,
     removeItem, 
     updateQuantity, 
     clearCart, 
     getTotalPrice, 
-    getTotalItems 
+    getTotalItems,
   } = useCart();
 
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (model) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [model]);
 
   if (!shouldShow) return null;
 

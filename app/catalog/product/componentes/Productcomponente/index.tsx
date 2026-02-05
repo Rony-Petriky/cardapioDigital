@@ -23,7 +23,7 @@ export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
   const [tipoSelecionado, setTipoSelecionado] = useState<number | null>(null);
-  const { addItem } = useCart();
+  const { addItem, openModal } = useCart();
 
   const [clientedata, setClientedata] = useState<ClientProdutsprops>({
     product: product,
@@ -64,26 +64,22 @@ export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
   ---------------------------------------------------------- */
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
-  const handleOrderSubmit = async () => {
-    const updated = {
+      const updated = {
       ...clientedata,
       preçoFinal: finalTotal,
       observação: note,
       tipos: tipos.find(t => t.id === tipoSelecionado)?.name || undefined
     };
-    setClientedata(updated);
-  };
-  const firstRender = useRef(true);
+    useEffect(() => { 
+    setClientedata(updated);}, [finalTotal, note, tipoSelecionado]);
+    
+  const handleOrderSubmit = async () => {
 
-useEffect(() => {
-  if (firstRender.current) {
-    firstRender.current = false;
-    return; // ⛔ pula a primeira execução
-  }
-
+  
   addItem(clientedata);
-}, [clientedata]);
+  openModal()
+  console.log("Dados do pedido adicionados ao carrinho:", clientedata);
+}
 
   return (
     <>

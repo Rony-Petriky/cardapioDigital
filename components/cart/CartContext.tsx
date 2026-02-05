@@ -15,12 +15,15 @@ interface ClientProdutsprops {
 }
 interface CartContextType {
   items: CartItem[];
+  model: boolean;
   addItem: (clientProdutsprops: ClientProdutsprops) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
+  openModal: () => void;
+  closeModal: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -162,16 +165,29 @@ clientProdutsprops: ClientProdutsprops
     return items.reduce((total, item) => total + item.quantity, 0);
   }, [items]);
 
+  //abrir modal
+  const [model, setModel] = useState(false);
+  const openModal = useCallback(() => {
+    setModel(true);
+  }, [model]);
+
+  const closeModal = useCallback(() => {
+    setModel(false);
+  }, [model]);
+
   return (
     <CartContext.Provider
       value={{
         items,
+        model,
         addItem,
         removeItem,
         updateQuantity,
         clearCart,
         getTotalPrice,
         getTotalItems,
+        openModal,
+        closeModal,
       }}
     >
       {children}
