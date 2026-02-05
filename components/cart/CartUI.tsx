@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCart } from "./CartContext";
+import OrderModal, {OrderData} from "@/components/modelCliente"; 
+
 
 export default function CartUI() {
   const pathname = usePathname();
@@ -11,7 +13,19 @@ export default function CartUI() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
-  const { items, totalItems, totalPrice, updateQuantity, removeItem, clear } = useCart();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { 
+    items, 
+    removeItem, 
+    updateQuantity, 
+    clearCart, 
+    getTotalPrice, 
+    getTotalItems 
+  } = useCart();
+
+  const totalItems = getTotalItems();
+  const totalPrice = getTotalPrice();
 
   if (!shouldShow) return null;
 
@@ -19,6 +33,7 @@ export default function CartUI() {
     if (items.length === 0 || isSubmitting) return;
     setIsSubmitting(true);
     setSubmitMessage(null);
+    setIsModalOpen(true);
 
     const payload = {
       createdAt: new Date().toISOString(),
@@ -26,12 +41,15 @@ export default function CartUI() {
       totalPrice,
       items: items.map((item) => ({
         id: item.id,
-        name: item.name,
-        price: item.price,
+        name: item.product.name,
+        price: item.totalPrice || 0,
         quantity: item.quantity,
+        observation: item.observation,
+        selectedType: item.selectedType?.name,
+        additionals: item.selectedAdditionals?.map(a => a.name)
       })),
     };
-
+    console.log("Payload do pedido:", payload);
     try {
       const response = await fetch("/api/cliente", {
         method: "POST",
@@ -43,7 +61,7 @@ export default function CartUI() {
         throw new Error("Falha ao enviar pedido");
       }
 
-      clear();
+      clearCart();
       setSubmitMessage("Pedido enviado com sucesso!");
       setOpen(false);
     } catch (err) {
@@ -51,6 +69,12 @@ export default function CartUI() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Função auxiliar para formatar preço com segurança
+  const formatPrice = (price: number | undefined): string => {
+    if (price === undefined || price === null) return "0.00";
+    return price.toFixed(2);
   };
 
   return (
@@ -102,53 +126,97 @@ export default function CartUI() {
                 </div>
               )}
 
-              {items.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 bg-gray-50 rounded-2xl p-3">
-                  <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-900">{item.name}</div>
-                    <div className="text-sm text-gray-500">R$ {item.price.toFixed(2)}</div>
-                    <div className="flex items-center gap-2 mt-2">
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <span className="w-6 text-center font-semibold">{item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center"
-                      >
-                        +
-                      </button>
+              {items.map((item) => {
+                // Calcular preço dos adicionais
+                const additionalPrice = item.selectedAdditionals?.reduce((sum, a) => sum + (a.price || 0), 0) || 0;
+                
+                return (
+                  <div key={item.id} className="flex items-center gap-4 bg-gray-50 rounded-2xl p-3">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white">
+                      {item.product?.image && (
+                        <Image 
+                          src={item.product.image} 
+                          alt={item.product?.name || "Produto"} 
+                          fill 
+                          className="object-cover" 
+                          sizes="64px"
+                        />
+                      )}
                     </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900">
+                        {item.product?.name || "Produto sem nome"}
+                      </div>
+                      
+                      {item.selectedType && (
+                        <div className="text-sm text-gray-600">
+                          {item.selectedType.name}
+                        </div>
+                      )}
+                      
+                      {item.selectedAdditionals && item.selectedAdditionals.length > 0 && (
+                        <div className="text-sm text-gray-600">
+                          <div>Adicionais:</div>
+                          <div className="text-xs">
+                            {item.selectedAdditionals.map(a => 
+                              `${a.name} (+R$ ${formatPrice(a.price)})`
+                            ).join(', ')}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {item.observation && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          Obs: {item.observation}
+                        </div>
+                      )}
+                      
+                      <div className="text-sm text-gray-700 mt-1">
+                         R$ {formatPrice(item.totalPrice)}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center"
+                          disabled={item.quantity <= 1}
+                        >
+                          -
+                        </button>
+                        <span className="w-6 text-center font-semibold">{item.quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      className="text-red-500 text-sm hover:text-red-600"
+                    >
+                      Remover
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(item.id)}
-                    className="text-red-500 text-sm hover:text-red-600"
-                  >
-                    Remover
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="border-t px-6 py-5 space-y-4">
               <div className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                <span>Total</span>
-                <span>R$ {totalPrice.toFixed(2)}</span>
+                <span>Total ({totalItems} {totalItems === 1 ? 'item' : 'itens'})</span>
+                <span>R$ {formatPrice(totalPrice)}</span>
               </div>
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={clear}
+                  onClick={clearCart}
                   className="flex-1 rounded-full border border-gray-300 px-4 py-3 font-semibold text-gray-700 hover:bg-gray-50"
+                  disabled={items.length === 0}
                 >
                   Limpar
                 </button>
@@ -159,12 +227,20 @@ export default function CartUI() {
                   className="flex-1 rounded-full bg-green-600 px-4 py-3 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                 >
                   {isSubmitting ? "Enviando..." : "Finalizar Pedido"}
+                  
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
+                {/* Modal */}
+                <OrderModal
+                  isOpen={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  onSubmit={() => {}}
+                  valorEntrega={3}
+                />
     </>
   );
 }

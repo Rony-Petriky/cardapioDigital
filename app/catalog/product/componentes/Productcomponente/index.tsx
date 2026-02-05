@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect,useRef } from "react";
 import Image from "next/image";
 import OrderModal, {OrderData} from "@/components/modelCliente"; 
 import { AdditionalList } from "./componentes/AdditionalList"; 
-import type { Additional, Product, ProductProps, ClientProdutsprops} from "@/types/Product";
+import type { Additional, Product,} from "@/types/Product";
 import { api } from "@/lib/api";
 import { redirect  } from "next/navigation";
 import { useCart } from "@/components/cart/CartContext";
+import { products } from "@/data/products";
 
-
-export function Productcomponente({product,valorEntrega }:ProductProps) {
+interface ClientProdutsprops {
+  product: Product;
+  valorEntrega: number;
+  selectedAdditionals?: Additional[];
+  preçoFinal: number;
+  observação: string;
+  tipos: string | undefined;
+}
+export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
   const [qty, setQty] = useState<Record<number, number>>({});
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
@@ -18,23 +26,12 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
   const { addItem } = useCart();
 
   const [clientedata, setClientedata] = useState<ClientProdutsprops>({
-    clientedata: {nome: "",
-    telefone: "",
-    endereco: {
-      rua: "",
-      bairro: "",
-      numero: "",
-      complemento: "",
-    },
-    entrega: false,
-    formaPagamento: "pix"},
-    product: [{product, infadicionais: {observação: note, 
-                                        tipos: ""},
-                                        valorEntrega: valorEntrega}],
-    infvenda: {preçoFinal: 0, 
-                entrega: false, 
-                formaPagamento: "pix"}
-});
+    product: product,
+    valorEntrega: valorEntrega,
+    preçoFinal: 0,
+    observação: "",
+    tipos: undefined,
+  });
   const add = (id: number) => {
     setQty((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
   };
@@ -67,24 +64,26 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
   ---------------------------------------------------------- */
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-  async function handleOrderSubmit(data: OrderData) {
-  const updated = {
-    ...clientedata,
-    clientedata: data,
-    nome: product.name,
-    preçoFinal: data.entrega ? finalTotal + valorEntrega: finalTotal,
-    observação: note,
-    tipos: tipos.find(t => t.id === tipoSelecionado)?.name || undefined
+  
+  const handleOrderSubmit = async () => {
+    const updated = {
+      ...clientedata,
+      preçoFinal: finalTotal,
+      observação: note,
+      tipos: tipos.find(t => t.id === tipoSelecionado)?.name || undefined
+    };
+    setClientedata(updated);
   };
+  const firstRender = useRef(true);
 
-  setClientedata(updated);
+useEffect(() => {
+  if (firstRender.current) {
+    firstRender.current = false;
+    return; // ⛔ pula a primeira execução
+  }
 
-  const response = await api.post("/api/cliente", updated);
-  console.log("Resposta:", response.data.recebido);
-    // Aqui você pode enviar os dados para sua API
-    setIsModalOpen(false);
-    redirect(response.data.recebido)
-  };
+  addItem(clientedata);
+}, [clientedata]);
 
   return (
     <>
@@ -187,7 +186,7 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
               Total: R$ {finalTotal.toFixed(2)}
             </div>
 
-            <button onClick={() => addItem(clientedata)}
+            <button onClick={() => handleOrderSubmit()}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl text-lg">
               Finalizar Pedido
             </button>
@@ -205,3 +204,4 @@ export function Productcomponente({product,valorEntrega }:ProductProps) {
     </>
   );
 }
+

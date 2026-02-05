@@ -1,94 +1,189 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
-import type { Additional, Product, ProductProps, ClientProdutsprops} from "@/types/Product";
+import { createContext, useContext, useState, useCallback } from 'react';
+import type { Product, CartItem, Tipos, Additional } from "@/types/Product";
 
+interface ClientProdutsprops {
+  product: Product;
+  valorEntrega: number;
+  selectedAdditionals?: Additional[];
+  preçoFinal: number
+  observação: string;
+  tipos: string | undefined;
 
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
+  
 }
-
-interface CartContextValue {
+interface CartContextType {
   items: CartItem[];
-  totalItems: number;
-  totalPrice: number;
-  addItem: (product: ClientProdutsprops) => void;
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
-  clear: () => void;
+  addItem: (clientProdutsprops: ClientProdutsprops) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
+  getTotalPrice: () => number;
+  getTotalItems: () => number;
 }
 
-const CartContext = createContext<CartContextValue | null>(null);
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+interface AddItemParams {
+  product: Product;
+  selectedType?: Tipos;
+  selectedAdditionals?: Additional[];
+  observation?: string;
+  preçoFinal: number;
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addItem = (product: ClientProdutsprops) => {
+  // Gera um ID único baseado no produto + tipo + adicionais
+  const generateItemId = (params: AddItemParams): string => {
+    const { product, selectedType, selectedAdditionals } = params;
+    
+    // ID do produto
+    let id = `prod-${product.id}`;
+    
+    // Adiciona tipo selecionado
+    if (selectedType) {
+      id += `-type-${selectedType.name}`;
+    }
+    
+    // Adiciona adicionais (ordenados para garantir ID único)
+    if (selectedAdditionals && selectedAdditionals.length > 0) {
+      const additionalIds = selectedAdditionals
+        .map(a => a.id)
+        .sort()
+        .join('-');
+      id += `-add-${additionalIds}`;
+    }
+    
+    return id;
+  };
+
+  // Calcula preço unitário
+  const calculateUnitPrice = (params: AddItemParams): number => {
+    const {selectedType, selectedAdditionals, preçoFinal } = params;
+    let price = preçoFinal;
+    
+    // Adiciona preço do tipo selecionado
+    
+    // Adiciona preço dos adicionais selecionados
+    if (selectedAdditionals && selectedAdditionals.length > 0) {
+      selectedAdditionals.forEach(additional => {
+        price += additional.price;
+      });
+    }
+    
+    return price;
+  };
+
+  // Adiciona item ao carrinho
+  const addItem = useCallback((
+clientProdutsprops: ClientProdutsprops
+  ) => {
     setItems((prev) => {
-      const existing = prev.find((item) => item.id === product.product[0].product.id);
+      const params: AddItemParams = { 
+        product: clientProdutsprops.product,
+        selectedType: clientProdutsprops.tipos ? clientProdutsprops.product.tipos?.find(t => t.name === clientProdutsprops.tipos) : undefined,
+        selectedAdditionals: clientProdutsprops.selectedAdditionals,
+        observation: clientProdutsprops.observação,
+        preçoFinal: clientProdutsprops.preçoFinal
+      };
+      const itemId = generateItemId(params);
+      const existing = prev.find((item) => item.id === itemId);
+      const unitPrice = calculateUnitPrice(params);
+
       if (existing) {
+        // Atualiza quantidade se já existe
         return prev.map((item) =>
-          item.id === product.product[0].product.id
-            ? { ...item, quantity: item.quantity + 1 }
+          item.id === itemId
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: (item.quantity + 1) * item.unitPrice,
+              }
             : item
         );
       }
-      return [
-        ...prev,
-        {
-          id: product.product[0].product.id,
-          name: product.product[0].product.name,
-          price: product.product[0].product.price,
-          image: product.product[0].product.image,
-          quantity: 1,
-        },
-      ];
+
+      // Adiciona novo item
+      const newItem: CartItem = {
+        id: itemId,
+        product: clientProdutsprops.product,
+        selectedType: clientProdutsprops.tipos ? clientProdutsprops.product.tipos?.find(t => t.name === clientProdutsprops.tipos) : undefined,
+        selectedAdditionals: clientProdutsprops.selectedAdditionals || [],
+        observation: clientProdutsprops.observação,
+        quantity: 1,
+        unitPrice,
+        totalPrice: unitPrice,
+      };
+
+      return [...prev, newItem];
     });
-  };
+  }, []);
 
-  const removeItem = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  // Remove item do carrinho
+  const removeItem = useCallback((id: string) => {
+    setItems(prev => prev.filter(item => item.id !== id));
+  }, []);
 
-  const updateQuantity = (id: number, quantity: number) => {
-    setItems((prev) => {
-      if (quantity <= 0) {
-        return prev.filter((item) => item.id !== id);
-      }
-      return prev.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      );
-    });
-  };
+  // Atualiza quantidade
+  const updateQuantity = useCallback((id: string, quantity: number) => {
+    if (quantity < 1) {
+      removeItem(id);
+      return;
+    }
 
-  const clear = () => setItems([]);
+    setItems(prev =>
+      prev.map(item =>
+        item.id === id
+          ? {
+              ...item,
+              quantity,
+              totalPrice: quantity * item.unitPrice,
+            }
+          : item
+      )
+    );
+  }, [removeItem]);
 
-  const totalItems = useMemo(
-    () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items]
+  // Limpa carrinho
+  const clearCart = useCallback(() => {
+    setItems([]);
+  }, []);
+
+  // Calcula preço total
+  const getTotalPrice = useCallback(() => {
+    return items.reduce((total, item) => total + item.totalPrice, 0);
+  }, [items]);
+
+  // Calcula total de itens
+  const getTotalItems = useCallback(() => {
+    return items.reduce((total, item) => total + item.quantity, 0);
+  }, [items]);
+
+  return (
+    <CartContext.Provider
+      value={{
+        items,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCart,
+        getTotalPrice,
+        getTotalItems,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
   );
-
-  const totalPrice = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [items]
-  );
-
-  const value = useMemo(
-    () => ({ items, totalItems, totalPrice, addItem, removeItem, updateQuantity, clear }),
-    [items, totalItems, totalPrice]
-  );
-
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
+// Hook para usar o carrinho
 export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) {
-    throw new Error("useCart must be used within CartProvider");
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within CartProvider');
   }
-  return ctx;
+  return context;
 }

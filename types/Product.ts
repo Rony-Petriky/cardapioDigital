@@ -25,25 +25,15 @@ export interface Product {
   maisVendidos: boolean;
   tipos?: Tipos[];
 }
-export interface InfAdicionais {
-  observação?:string,
-  tipos?: string;
-}
-export interface InfVenda {
-  preçoFinal: number;
-  entrega: boolean;
-  formaPagamento: string;
 
-}
-export interface ProductProps{
-  product: Product;
-  infadicionais?: InfAdicionais;
-  valorEntrega:number;
-   
-}
-
-export interface ClientProdutsprops{
-  clientedata:OrderData,
-  product: ProductProps[],
-  infvenda: InfVenda;
+// Adicione esta interface para o item do carrinho
+export interface CartItem {
+  id: string; // ID único para cada combinação
+  product: Product; // O produto base
+  selectedType?: Tipos; // Tipo escolhido (se houver)
+  selectedAdditionals?: Additional[]; // Adicionais selecionados
+  observation?: string; // Observações do cliente
+  quantity: number; // Quantidade
+  unitPrice: number; // Preço unitário (calculado)
+  totalPrice: number; // Preço total (unitPrice * quantity)
 }
