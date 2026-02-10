@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useCart } from "./CartContext";
 import OrderModal, {OrderData} from "@/components/modelCliente"; 
+import { api } from "@/lib/api";
+import { useRouter } from 'next/navigation';
+
 
 
 export default function CartUI() {
@@ -27,6 +30,7 @@ export default function CartUI() {
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
   const [open, setOpen] = useState(false);
+  const router = useRouter()
   useEffect(() => {
     if (model) {
       setOpen(true);
@@ -37,46 +41,53 @@ export default function CartUI() {
 
   if (!shouldShow) return null;
 
-  const handleCheckout = async () => {
+  const handleClose = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCheckout = async (data: OrderData) => {
     if (items.length === 0 || isSubmitting) return;
     setIsSubmitting(true);
     setSubmitMessage(null);
-    setIsModalOpen(true);
+    
 
     const payload = {
+      cliente:data,
       createdAt: new Date().toISOString(),
       totalItems,
       totalPrice,
       items: items.map((item) => ({
         id: item.id,
+        idproduct: item.product?.id,
         name: item.product.name,
         price: item.totalPrice || 0,
         quantity: item.quantity,
         observation: item.observation,
         selectedType: item.selectedType?.name,
-        additionals: item.selectedAdditionals?.map(a => a.name)
+        additionals: item.selectedAdditionals?.map((a) => ({name: a.name, price: a.price})) || [],
       })),
     };
     console.log("Payload do pedido:", payload);
     try {
-      const response = await fetch("/api/cliente", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
+      const response = await api.post("/api/cliente", payload)
+      console.log("Resposta da API:", response.data.recebido);
+      
+      if (!response.status || response.status >= 400) {
         throw new Error("Falha ao enviar pedido");
       }
-
+      setIsModalOpen(false)
       clearCart();
       setSubmitMessage("Pedido enviado com sucesso!");
       setOpen(false);
+      router.refresh();
+      router.push(response.data.recebido);
+      
     } catch (err) {
       setSubmitMessage("Não foi possível enviar o pedido. Tente novamente.");
     } finally {
       setIsSubmitting(false);
     }
+    
   };
 
   // Função auxiliar para formatar preço com segurança
@@ -230,7 +241,7 @@ export default function CartUI() {
                 </button>
                 <button
                   type="button"
-                  onClick={handleCheckout}
+                  onClick={handleClose}
                   disabled={items.length === 0 || isSubmitting}
                   className="flex-1 rounded-full bg-green-600 px-4 py-3 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                 >
@@ -246,7 +257,7 @@ export default function CartUI() {
                 <OrderModal
                   isOpen={isModalOpen}
                   onClose={() => setIsModalOpen(false)}
-                  onSubmit={() => {}}
+                  onSubmit={handleCheckout}
                   valorEntrega={3}
                 />
     </>

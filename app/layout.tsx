@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import ClientProviders from "@/components/ClientProviders";
 import RouteLoadingOverlay from "@/components/RouteLoadingOverlay";
 export const metadata = {
-  title: "Catálogo Digital",
-  description: "Catálogo de produtos desenvolvido em Next.js",
+  title: "Ai Fome - Cardápio Digital Inteligente",
+  description: "Cardápio Digital Inteligente",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

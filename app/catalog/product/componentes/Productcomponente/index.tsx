@@ -45,15 +45,36 @@ export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
     });
   };
 
-  const filtered = product.additionals?.filter((item) =>
+const filteredGroups = product.additionals?.map(group => ({
+  ...group,
+  items: group.items.filter(item =>
     item.name.toLowerCase().includes(search.toLowerCase())
-  );
+  )
+}));
   const tipos = product.tipos || [];
   
-    const extrasTotal = product.additionals?.reduce((sum, item) => {
-        const count = qty[item.id] || 0;
-        return sum + count * item.price;
-    }, 0) || 0;
+    const extrasTotal =
+      product.additionals?.reduce((groupSum, group) => {
+        return (
+          groupSum +
+          group.items.reduce((itemSum, item) => {
+            const count = qty[item.id] || 0;
+            return itemSum + count * item.price;
+          }, 0)
+        );
+      }, 0) || 0;
+
+      const selectedAdditionals =
+  product.additionals?.flatMap(group =>
+    group.items
+      .filter(item => qty[item.id] && qty[item.id] > 0)
+      .map(item => ({
+        ...item,
+        quantity: qty[item.id],
+        groupTitle: group.title,
+        groupType: group.type
+      }))
+  ) || [];
 
     const tipoprice = tipos.find(t => t.id === tipoSelecionado)?.price || 0;
     const finalTotalaux = tipoprice > 0 ?  tipoprice : product.price;
@@ -64,14 +85,17 @@ export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
   ---------------------------------------------------------- */
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-      const updated = {
-      ...clientedata,
-      preçoFinal: finalTotal,
-      observação: note,
-      tipos: tipos.find(t => t.id === tipoSelecionado)?.name || undefined
-    };
+const updated = {
+  ...clientedata,
+  preçoFinal: finalTotalaux,
+  observação: note,
+  tipos: tipos.find(t => t.id === tipoSelecionado)?.name || undefined,
+  selectedAdditionals: selectedAdditionals
+};
+
+    console.log("selectedAdditionals:", selectedAdditionals);
     useEffect(() => { 
-    setClientedata(updated);}, [finalTotal, note, tipoSelecionado]);
+    setClientedata(updated);}, [finalTotal, note, tipoSelecionado, qty]);
     
   const handleOrderSubmit = async () => {
 
@@ -148,7 +172,7 @@ export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
 
           {/* LISTA DE ADICIONAIS */}
           {/* BUSCA */}
-          {filtered && (
+          {filteredGroups && (
           <>
           <div className="px-6 pb-4">
             <input
@@ -158,7 +182,26 @@ export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
               className="w-full bg-gray-100 rounded-2xl p-3 text-sm focus:ring-2 focus:ring-green-500"
             />
           </div>
-          <AdditionalList items={filtered} qty={qty} add={add} sub={sub} />
+          {filteredGroups?.map(group => (
+            <div key={group.title}>
+              <div className="px-6 pb-4">
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                  {group.title}
+                </h4>
+                <h5 className="text-sm text-gray-500">Escolha até {group.max} itens</h5>
+              </div>
+
+              <AdditionalList
+                type={group.type}
+                max={group.max}
+                items={group.items}
+                qty={qty}
+                add={add}
+                sub={sub}
+              />
+            </div>
+          ))}
+
           </>
           ) }
 

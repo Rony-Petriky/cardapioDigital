@@ -214,43 +214,127 @@ tags:["queijo", "bolo", "polvilho"],
   { id: 2, name: "Pote 500", price: 18 },
   ]
 },
- {
+  {
   id: 17,
   name: "Hambúrguer Artesanal",
-  description: "Hambúrguer artesanal com carne 180g, queijo cheddar, alface, tomate e molho especial da casa.",
+  description:
+    "Hambúrguer artesanal com carne 180g, queijo cheddar, alface, tomate e molho especial da casa.",
   price: 28.9,
   category: "Lanches",
   image: "/images/hamburguer/hamburguer-artesanal.jpg",
   tags: ["hambúrguer", "artesanal", "lanche"],
   destaque: true,
   maisVendidos: true,
+
   additionals: [
-    {
-      id: 1,
-      name: "Queijo extra",
-      price: 3.5,
-      icon: "🧀"
+    { 
+      type: "free",
+      title: "Adicionais Grátis",
+      max: 2,
+      items: [
+        {
+          id: 101,
+          name: "Molho Especial da Casa",
+          price: 0,
+          icon: "🥫"
+        },
+        {
+          id: 102,
+          name: "Picles",
+          price: 0,
+          icon: "🥒"
+        },
+        {
+          id: 103,
+          name: "Alface",
+          price: 0,
+          icon: "🥬"
+        },
+        {
+          id: 104,
+          name: "Tomate",
+          price: 0,
+          icon: "🍅"
+        }
+      ]
     },
     {
-      id: 2,
-      name: "Bacon",
-      price: 5.0,
-      icon: "🥓"
+      type: "pago",
+      title: "Adicionais Premium",
+      max: 3,
+      items: [
+        {
+          id: 3,
+          name: "Carne Angus Extra",
+          price: 8.0,
+          icon: "🥩"
+        },
+        {
+          id: 4,
+          name: "Cheddar Cremoso",
+          price: 4.5,
+          icon: "🧀"
+        },
+        {
+          id: 5,
+          name: "Molho Barbecue Artesanal",
+          price: 3.0,
+          icon: "🍯"
+        },
+        {
+          id: 6,
+          name: "Onion Rings Crocantes",
+          price: 6.5,
+          icon: "🧅"
+        },
+        {
+          id: 7,
+          name: "Abacaxi Grelhado",
+          price: 4.0,
+          icon: "🍍"
+        }
+      ]
+    },
+    {
+      type: "combo",
+      title: "Adicionais do Combo",
+      max: 1,
+      items: [
+        {
+          id: 201,
+          name: "Batata Frita Média",
+          price: 12,
+          icon: "🍟",
+        },
+        {
+          id: 202,
+          name: "Refrigerante 300ml",
+          price: 4.0,
+          icon: "🥤",
+        },
+        {
+          id: 203,
+          name: "Sobremesa do Dia",
+          price: 5.0,
+          icon: "🍰",
+        }
+      ]
     }
+  
   ],
+
   tipos: [
     {
       id: 1,
-      name: "Pão Brioche",
-      price: 0
+      name: "Carne 100g",
+      price: 28.9
     },
     {
       id: 2,
-      name: "Pão Australiano",
-      price: 2.5
+      name: "Carne 180g",
+      price: 34.9
     }
   ]
 }
-
 
 ];

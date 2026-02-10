@@ -1,4 +1,7 @@
 import OrderModal, {OrderData} from "@/components/modelCliente"; 
+
+export type AdditionalType = "free" | "pago" | "combo";
+
 export interface Additional {
   id: number;
   name: string;
@@ -6,6 +9,13 @@ export interface Additional {
   image?: string;
   icon?: string;
 }
+export interface AdditionalGroup {
+  type: AdditionalType;
+  title: string;
+  max?: number;
+  items: Additional[];
+}
+
 export interface Tipos {
   id: number;
   name: string;
@@ -20,7 +30,7 @@ export interface Product {
   category: string;
   image: string;
   tags: string[];
-  additionals?: Additional[];
+  additionals?: AdditionalGroup[];
   destaque: boolean;
   maisVendidos: boolean;
   tipos?: Tipos[];
