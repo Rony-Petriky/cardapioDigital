@@ -14,7 +14,7 @@ interface ClientProdutsprops {
   product: Product;
   valorEntrega: number;
   selectedAdditionals?: Additional[];
-  preçoFinal: number;
+  preçoFinal: number   ;
   observação: string;
   tipos: string | undefined;
 }
@@ -52,7 +52,8 @@ const filteredGroups = product.additionals?.map(group => ({
   )
 }));
   const tipos = product.tipos || [];
-  
+  const isButtonEnabled = tipos.length > 0 ? tipoSelecionado !== null : true;
+
     const extrasTotal =
       product.additionals?.reduce((groupSum, group) => {
         return (
@@ -206,7 +207,7 @@ const updated = {
           ) }
 
           {/* OBSERVAÇÃO */}
-          <div className="px-6 py-3 bg-white">
+          <div className="px-6 py-3 pb-30 bg-white">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Observação
             </label>
@@ -220,16 +221,25 @@ const updated = {
           </div>
 
           {/* BOTÃO CARRINHO */}
-          <div className="px-6 py-4 bg-white border-t">
-            <div className="text-lg font-semibold text-gray-900 mb-3">
-              Total: R$ {finalTotal.toFixed(2)}
+            <div className="fixed bottom-0 left-0 right-0 px-6 py-4 bg-white border-t shadow-lg">
+              <div className="max-w-screen-lg mx-auto">
+                <div className="text-lg font-semibold text-gray-900 mb-3">
+                  Total: R$ {finalTotal.toFixed(2)}
+                </div>
+                <button 
+                  disabled={!isButtonEnabled}
+                  onClick={() => handleOrderSubmit()}
+                  className={`w-full text-white font-bold py-4 rounded-2xl text-lg
+                            ${isButtonEnabled
+            ? ' bg-green-600 hover:bg-green-700 text-white cursor-pointer'
+            : 'bg-gray-400 text-white cursor-not-allowed'
+          }
+        `}
+                >
+                  {isButtonEnabled ? 'Continuar' : 'Selecione um tipo '}
+                </button>
+              </div>
             </div>
-
-            <button onClick={() => handleOrderSubmit()}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl text-lg">
-              Finalizar Pedido
-            </button>
-          </div>
 
         </div>
           {/* Modal */}

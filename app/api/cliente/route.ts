@@ -27,8 +27,12 @@ interface CartOrderPayload {
 function formatarMensagem(pedido: CartOrderPayload) {
   // Função para formatar os itens com seus adicionais
   const formatarItemComAdicionais = (item: CartItemPayload, index: number) => {
-    let itemText = `${index + 1}. ${item.name} (Qtd: ${item.quantity}) - R$ ${(item.price * item.quantity).toFixed(2)}`;
+    let itemText = `${index + 1}. ${item.name} (Qtd: ${item.quantity}) - R$ ${(item.price).toFixed(2)}`;
     // Adicionar os adicionais se existirem
+    if (item.selectedType) {
+      itemText += `   \n [ Tipo: ${item.selectedType} ]`;
+    }
+
     if (item.additionals && item.additionals.length > 0) {
       itemText += '\n  Adicionais:';
       item.additionals.forEach((additional, idx) => {
