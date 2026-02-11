@@ -58,6 +58,7 @@ export default function ProductsByCategory({ products,  botaoMiasCategoria}: Pro
           {(botaoMiasCategoria ? productsByCategory[category].slice(0, 3):productsByCategory[category]).map((product) => (
               <div
                 key={product.id}
+                onClick={() => goToProduct(product.id)}
                 className="bg-gray-50 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="relative h-68 ">
@@ -79,16 +80,10 @@ export default function ProductsByCategory({ products,  botaoMiasCategoria}: Pro
                     <span className="text-lg font-bold text-green-600">R$ {product.price.toFixed(2)}</span>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => addItem(product)}
+                        onClick={() => goToProduct(product.id)}
                         className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full font-semibold text-xs transition-colors duration-300"
                       >
-                        Adicionar
-                      </button>
-                      <button
-                        onClick={() => goToProduct(product.id)}
-                        className="bg-white border border-green-500 text-green-600 px-4 py-2 rounded-full font-semibold text-xs transition-colors duration-300 hover:bg-green-50"
-                      >
-                        Ver
+                        Comprar
                       </button>
                     </div>
                   </div>

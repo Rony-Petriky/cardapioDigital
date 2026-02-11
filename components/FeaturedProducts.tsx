@@ -69,10 +69,10 @@ export default function FeaturedProducts({ products }: Props) {
               <span className="text-2xl font-bold text-green-600">R$ {product.price.toFixed(2)}</span>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => addItem(product)}
+                  onClick={() => goToProduct(product.id)}
                   className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full font-semibold text-sm transition-colors duration-300 shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  Adicionar
+                  Comprar
                 </button>
 
               </div>
