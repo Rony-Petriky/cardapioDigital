@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import OrderModal, {OrderData} from "@/components/modelCliente"; 
-
+import { getProducts, getCliente } from "@/lib/getProducts";
 
 interface CartItemPayload {
   id: number;
@@ -23,6 +23,8 @@ interface CartOrderPayload {
   totalPrice: number;
   items: CartItemPayload[];
 }
+const clientes = await getCliente();
+const cliente = clientes[0];
 // Formatando a mensagem
 function formatarMensagem(pedido: CartOrderPayload) {
   // Função para formatar os itens com seus adicionais
@@ -81,7 +83,7 @@ ITENS DO PEDIDO:
 ${itensFormatados}
 
 TOTAL DE ITENS: ${totalItens}
-VALOR TOTAL: R$ ${pedido.totalPrice.toFixed(2)}
+VALOR TOTAL: R$ ${(pedido.totalPrice + (cliente.valorEntrega || 0)).toFixed(2)}
 FORMA DE PAGAMENTO: ${pedido.cliente.formaPagamento.toUpperCase()}
 ENTREGA: ${pedido.cliente.entrega ? 'SIM' : 'NÃO'}
 
@@ -95,7 +97,7 @@ function gerarLinkWhatsApp(pedido: CartOrderPayload) {
   console.log("Gerando link do WhatsApp para o pedido:", pedido);
   const mensagem = formatarMensagem(pedido);
   const mensagemCodificada = encodeURIComponent(mensagem);
-  const numeroWhatsApp = "65996934486"; // Substitua pelo número da empresa
+  const numeroWhatsApp = cliente.telefone; // Substitua pelo número da empresa
   
   return `https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`;
 }

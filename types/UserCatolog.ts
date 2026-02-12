@@ -1,3 +1,7 @@
+export interface SobreLoja {
+  titulo: string;
+  texto: string;
+}
 export interface Cliente {
   id: number;
   nome: string;
@@ -5,7 +9,8 @@ export interface Cliente {
   telefone: string;
   nomeLoja: string;
   descricaoLoja: string;
-  horarioFuncionamento: string;
+  horarioFuncionamento: string; 
+  sobreLoja: SobreLoja;
   valorEntrega?: number;
  logoLoja?: string; 
 }
