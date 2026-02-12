@@ -21,10 +21,12 @@ export default function EditProductPage() {
         id: parseInt(productId),
         name: "Produto Exemplo",
         description: "Descrição do produto exemplo",
-        price: "R$ 99,90",
+        price: 99.90,
         category: "eletrônicos",
         image: "/images/headphone.jpeg",
         tags: ["novo", "promoção"],
+        destaque: true,
+        maisVendidos: false,
       };
       setProduct(mockProduct);
       setLoading(false);
