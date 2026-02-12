@@ -31,8 +31,8 @@ export interface Product {
   image: string;
   tags: string[];
   additionals?: AdditionalGroup[];
-  destaque: boolean;
-  maisVendidos: boolean;
+  destaque?: boolean;
+  maisVendidos?: boolean;
   tipos?: Tipos[];
 }
 
