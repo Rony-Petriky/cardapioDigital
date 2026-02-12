@@ -18,7 +18,11 @@ interface ClientProdutsprops {
   observação: string;
   tipos: string | undefined;
 }
-export function Productcomponente({product,valorEntrega }:ClientProdutsprops) {
+interface teste {
+  product: Product;
+  valorEntrega: number;
+}
+export function Productcomponente({product,valorEntrega }:teste) {
   const [qty, setQty] = useState<Record<number, number>>({});
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
