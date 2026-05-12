@@ -218,7 +218,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, valorEntrega }: 
                   </label>
                 </div>
                 
-                {formData.entrega && valorEntrega > 0 && (
+                {formData.entrega && valorEntrega > 4 && (
                   <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                     <div className="flex items-center gap-2">
                       <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
