@@ -80,12 +80,9 @@ export default async function CatalogPage() {
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Horário de Funcionamento</h3>
                   <p className="text-gray-600 text-lg">
-                    Segunda a Sexta: <span className="font-semibold text-green-600">08:00 - 18:00</span>
+                    Domingo a Domingo: <span className="font-semibold text-green-600">14:00 - 22:00</span>
                   </p>
-                  <p className="text-gray-600 text-lg">
-                    Sábado: <span className="font-semibold text-green-600">09:00 - 14:00</span>
-                  </p>
-                  <p className="text-gray-500 text-sm mt-2">Domingo: Fechado</p>
+
                 </div>
               </div>
             </div>
