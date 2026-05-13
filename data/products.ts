@@ -6,7 +6,7 @@ export const products: Product[] = [
     name: "Açai no copo",
     description: "Açaí gelado, cremoso e refrescante, perfeito para qualquer momento.!",
     price: 8.00,
-    category: "Açais",
+    category: "Acais",
     image: "/images/açai/01_açai.png",
     tags: ["açai", "gelado", "roxo"],
     destaque: true,
@@ -72,7 +72,7 @@ export const products: Product[] = [
     name: "Açai Casadinho de Iogurte Grego",
     description: "Açaí cremoso no estilo casadinho, combinado com iogurte grego, trazendo leveza e um contraste suave e refrescante.",
     price: 8.00,
-    category: "Açais",
+    category: "Acais",
     image: "/images/açai/02_acai_casadinho.jpg",
     tags: ["açai", "gelado", "roxo"],
     destaque: true,
@@ -139,7 +139,7 @@ export const products: Product[] = [
     name: "Açai Casadinho de Cupuaçu",
     description: "Açaí cremoso no estilo casadinho, combinado com creme de cupuaçu, com um toque tropical levemente ácido e irresistível.",
     price: 8.00,
-    category: "Açais",
+    category: "Acais",
     image: "/images/açai/02_acai_casadinho.jpg",
     tags: ["açai", "gelado", "roxo"],
     destaque: true,
@@ -152,6 +152,65 @@ export const products: Product[] = [
       { id: 5, name: "Copo 500", price: 22 },
       { id: 6, name: "Copo 700", price: 28 },
     ],
+    
+    additionals: [
+      { 
+        type: "free",
+        title: "Adicionais Grátis",
+        max: 3,
+        items: [
+          { id: 101, name: "Leite em pó", price: 0, icon: "🥛" },
+          { id: 102, name: "Paçoca", price: 0, icon: "🥜" },
+          { id: 103, name: "Leite condensado", price: 0, icon: "🍶" },
+          { id: 104, name: "Granola", price: 0, icon: "🌾" },
+          { id: 105, name: "Banana", price: 0, icon: "🍌" }
+        ]
+      },
+
+      {
+        type: "pago",
+        title: "Adicionais Pagos",
+        max: 3,
+        items: [
+          { id: 3, name: "Ovomaltine", price: 5.0, icon: "🍫" },
+          { id: 4, name: "Nutella", price: 5.0, icon: "🍫" },
+          { id: 5, name: "Creme de Amendoim", price: 5.0, icon: "🥜" },
+          { id: 6, name: "Creme de Avelã", price: 5.0, icon: "🌰" },
+          { id: 7, name: "Creme de ninho", price: 5.0, icon: "🥛" },
+          { id: 8, name: "Creme de morango", price: 5.0, icon: "🍓" },
+          { id: 9, name: "Creme de ovomaltine", price: 5.0, icon: "🍫" },
+          { id: 10, name: "Chantilly", price: 5.0, icon: "🍦" },
+          { id: 11, name: "Disquete", price: 2.0, icon: "🍬" },
+          { id: 12, name: "Gotas de chocolate", price: 2.0, icon: "🍫" },
+          { id: 13, name: "Granulado", price: 2.0, icon: "🍫" },
+          { id: 14, name: "Choco ball", price: 2.0, icon: "🍫" },
+          { id: 15, name: "Jujuba", price: 2.0, icon: "🍬" },
+          { id: 16, name: "Marshmallow", price: 2.0, icon: "🍡" },
+          { id: 17, name: "Biz", price: 2.0, icon: "🍫" }
+        ]
+      },
+      {
+        type: "pago",
+        title: "Frutas",
+        max: 1,
+        items: [
+          { id: 201, name: "Morango", price: 5.0, icon: "🍓" },
+          { id: 202, name: "Kiwi", price: 2.0, icon: "🥝" },
+          { id: 203, name: "Uva", price: 2.0, icon: "🍇" }
+        ]
+      }
+    ],
+  },{
+    id: 3764,
+    name: "Açai Cumbuquinha 500g",
+    description: "Açaí cremoso no estilo casadinho, combinado com creme de cupuaçu, com um toque tropical levemente ácido e irresistível.",
+    price: 22.00,
+    category: "Acais",
+    image: "/images/açai/cumbuquinha.jpg",
+    tags: ["açai", "gelado", "roxo"],
+    destaque: true,
+    maisVendidos: true,
+
     
     additionals: [
       { 
@@ -2112,7 +2171,7 @@ items: [
     description: "O Milkshake é uma bebida gelada e cremosa, preparada à base de leite e sorvete, podendo receber diversos sabores e coberturas. Refrescante e saboroso, é uma ótima opção para acompanhar refeições ou servir como sobremesa.",
     price: 12.00,
     category: "Milkshakes",
-    image: "/images/Milkshake/milkaçai.jpg",
+    image: "/images/Milkshake/milkaçai2.jpg",
     tags: ["açai", "gelado", "roxo"],
     destaque: true,
     maisVendidos: true,
